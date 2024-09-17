@@ -9,8 +9,7 @@ public:
     Nave(const ObjetoDeJogo &obj, int vidas);
     ~Nave(){}
     bool isAlive();
-    virtual void shoot(){}
-    void sofrerAtaque();
+    virtual void sofrerAtaque();
 protected:
     int qtdVidas;
 };
