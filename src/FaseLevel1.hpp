@@ -29,8 +29,8 @@ public:
 private:
     Hero *hero;
     Alien *alien[5];
-    Projetil *projetilHero[10];
-    //Projetil *projetilAlien[5];
+    ObjetoDeJogo *projetilHero[15];
+    ObjetoDeJogo *projetilAlien[5];
 
     std::atomic<bool> flag;
 

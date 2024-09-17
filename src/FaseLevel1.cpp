@@ -10,8 +10,8 @@ void FaseLevel1::shoot()
     {
         if ( ! projetilHero[i]->getActive() )
         {
-            projetilHero[i]->ativarObj();
             projetilHero[i]->moveTo( (hero->getPosL() - 7 ), (hero->getPosC() + 10));
+            projetilHero[i]->ativarObj();
             break;
         }
     }
@@ -64,61 +64,19 @@ void FaseLevel1::init()
     alien[4] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo1.img"), 0, 158), 1));
     objs.push_back(alien[4]);
 
-    projetilHero[0] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[0]->desativarObj();
-    objs.push_back(projetilHero[0]);
+    for (int i = 0; i<15; ++i)
+    {
+        projetilHero[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 );
+        projetilHero[i]->desativarObj();
+        objs.push_back(projetilHero[i]);
+    }
 
-    projetilHero[1] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[1]->desativarObj();
-    objs.push_back(projetilHero[1]);
-
-    projetilHero[2] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[2]->desativarObj();
-    objs.push_back(projetilHero[2]);
-
-    projetilHero[3] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[3]->desativarObj();
-    objs.push_back(projetilHero[3]);
-
-    projetilHero[4] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[4]->desativarObj();
-    objs.push_back(projetilHero[4]);
-
-    projetilHero[5] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[5]->desativarObj();
-    objs.push_back(projetilHero[5]);
-
-    projetilHero[6] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[6]->desativarObj();
-    objs.push_back(projetilHero[6]);
-
-    projetilHero[7] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[7]->desativarObj();
-    objs.push_back(projetilHero[7]);
-
-    projetilHero[8] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[8]->desativarObj();
-    objs.push_back(projetilHero[8]);
-
-    projetilHero[9] = new Projetil(ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 ));
-    projetilHero[9]->desativarObj();
-    objs.push_back(projetilHero[9]);
-    /*
-    projetilAlien[0] = nullptr;
-    objs.push_back(projetilAlien[0]);
-
-    projetilAlien[1] = nullptr;
-    objs.push_back(projetilAlien[1]);
-
-    projetilAlien[2] = nullptr;
-    objs.push_back(projetilAlien[2]);
-
-    projetilAlien[3] = nullptr;
-    objs.push_back(projetilAlien[3]);
-
-    projetilAlien[4] = nullptr;
-    objs.push_back(projetilAlien[4]);
-    */
+    for (int j = 0; j < 5; ++j)
+    {
+        projetilAlien[j] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilAlien.img"), 0, 0);
+        projetilAlien[j]->desativarObj();
+        objs.push_back(projetilAlien[j]);
+    }
 }
 
 unsigned FaseLevel1::run(SpriteBuffer &screen)
@@ -133,28 +91,41 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 
     while(this->flag.load())
     {
+        // Implementação responsável por mover os aliens
         for (int i = 0; i < 5; ++i)
         {
             if (alien[i]->isAlive())
             {
                 if (alien[i]->getDir() )
                 {
-                    alien[i]->moveRight(3);
+                    alien[i]->moveRight(5);
                     if (alien[i]->getPosC() >= 314)
                         alien[i]->disableDir();
                 }
                 else {
-                    alien[i]->moveLeft(3);
+                    alien[i]->moveLeft(5);
                     if (alien[i]->getPosC() <= 0)
                         alien[i]->activeDir();
                 }
             }
         }
+        // Implementação responsável por mover os projeteis
+        for (int j = 0; j < 20; ++j)
+        {
+            if (j < 5)
+            {
+                if (projetilAlien[j]->getActive())
+                    projetilAlien[j]->moveDown(3);
+            }
+            if (projetilHero[j]->getActive())
+                projetilHero[j]->moveUp(3);
+        }
+
         screen.clear();
         update();
         this->draw(screen);
         this->show(screen);
-        pausar(150);
+        pausar(100);
         system("cls");
         
     }
