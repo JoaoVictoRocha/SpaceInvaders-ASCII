@@ -1,3 +1,4 @@
+/*
 #ifndef SOUND_HPP
 #define SOUND_HPP
 
@@ -27,3 +28,4 @@ private:
 };
 
 #endif // SOUND_HPP
+*/

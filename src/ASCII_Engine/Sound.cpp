@@ -1,3 +1,4 @@
+/*
 #include "Sound.hpp"
 #include <sstream>
 #include <fstream>
@@ -102,3 +103,4 @@ bool Sound::isplaying() const
 	
 	return false;
 }
+*/

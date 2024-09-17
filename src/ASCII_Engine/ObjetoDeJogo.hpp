@@ -35,6 +35,7 @@ public:
 	int getPosL() const {return posL;}
 	int getPosC() const {return posC;}
 	const SpriteBase *getSprite() const {return pSprite;}
+	bool getActive() const {return ((active == true) ? active : false);}
 	
 	void ativarObj() {this->active = true;};
 	void desativarObj() {this->active = false;};
