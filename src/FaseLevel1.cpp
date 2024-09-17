@@ -10,8 +10,9 @@ void FaseLevel1::shoot()
     {
         if ( ! projetilHero[i]->getActive() )
         {
-            projetilHero[i]->moveTo( (hero->getPosL() - 7 ), (hero->getPosC() + 10));
             projetilHero[i]->ativarObj();
+            projetilHero[i]->moveTo( (hero->getPosL() - 7 ), (hero->getPosC() + 10));
+            
             break;
         }
     }
@@ -110,7 +111,7 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             }
         }
         // Implementação responsável por mover os projeteis
-        for (int j = 0; j < 20; ++j)
+        for (int j = 0; j < 15; ++j)
         {
             if (j < 5)
             {
@@ -120,12 +121,32 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             if (projetilHero[j]->getActive())
                 projetilHero[j]->moveUp(3);
         }
+        
+        // Eventos de colisão
+        for (int k = 0; k < 15; ++k)
+        {
+            if (alien[k]->colideComBordas(*projetilHero[k]))
+            {
+                alien[k]->sofrerAtaque();
+                if (!alien[k]->isAlive())
+                    alien[k]->desativarObj();
+            }
+            if (k < 5)
+            {
+                if (hero->colideComBordas(*projetilAlien[k]))
+                {
+                    hero->sofrerAtaque();
+                    if (!hero->isAlive())
+                        return Fase::GAME_OVER;
+                }
+            }
+        }
 
         screen.clear();
         update();
         this->draw(screen);
         this->show(screen);
-        pausar(100);
+        pausar(150);
         system("cls");
         
     }
