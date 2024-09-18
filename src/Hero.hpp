@@ -9,6 +9,7 @@ public:
     Hero(const Nave &);
     ~Hero(){}
 
+    void shoot(ObjetoDeJogo &) override;
 };
 
 #endif
