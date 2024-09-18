@@ -15,3 +15,7 @@ void Nave::sofrerAtaque()
 {
     --qtdVidas;
 }
+
+void Nave::shoot(ObjetoDeJogo &obj)
+{
+}
