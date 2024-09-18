@@ -16,7 +16,7 @@ class FaseLevel1 : public Fase
 {
 public:
     FaseLevel1(std::string n, const Sprite &bkg) : Fase(n,bkg) {}
-    virtual ~FaseLevel1(){delete [] hero; for (int i = 0; i<5; ++i) {delete [] alien[i];}}
+    virtual ~FaseLevel1(){}
 
     virtual void init();
     virtual unsigned run(SpriteBuffer &screen);
@@ -24,13 +24,14 @@ public:
     void moverAlien();
     void pausar(int);
 
-    void shoot();
+    void handleBullet();
+    //void shoot();
     
 private:
     Hero *hero;
     Alien *alien[5];
-    ObjetoDeJogo *projetilHero[15];
-    ObjetoDeJogo *projetilAlien[5];
+    ObjetoDeJogo *bulletHero[5];
+    ObjetoDeJogo *bulletAlien[5];
 
     std::atomic<bool> flag;
 

@@ -4,7 +4,9 @@
 #include <iostream>
 #include <conio.h>
 
-void FaseLevel1::shoot()
+#include <random>
+
+/* void FaseLevel1::shoot()
 {
     for (int i = 0; i < 10; ++i)
     {
@@ -14,6 +16,14 @@ void FaseLevel1::shoot()
             projetilHero[i]->ativarObj();
             break;
         }
+    }
+} */
+void FaseLevel1::handleBullet()
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        if (!bulletHero[i]->getActive())
+            hero->shoot(*bulletHero[i]);
     }
 }
 
@@ -30,7 +40,7 @@ void FaseLevel1::capturarTecla()
             hero->moveRight();
 
         if ( tecla == 32)
-            this->shoot();
+            this->handleBullet();
 
         if ( tecla == 27 )
         {
@@ -64,18 +74,18 @@ void FaseLevel1::init()
     alien[4] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo1.img"), 0, 158), 1));
     objs.push_back(alien[4]);
 
-    for (int i = 0; i<15; ++i)
+    for (int i = 0; i < 5; ++i)
     {
-        projetilHero[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 6, hero->getPosL() + 13 );
-        projetilHero[i]->desativarObj();
-        objs.push_back(projetilHero[i]);
+        bulletHero[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 6, hero->getPosL() + 13 );
+        bulletHero[i]->desativarObj();
+        objs.push_back(bulletHero[i]);
     }
 
     for (int j = 0; j < 5; ++j)
     {
-        projetilAlien[j] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilAlien.img"), 0, 0);
-        projetilAlien[j]->desativarObj();
-        objs.push_back(projetilAlien[j]);
+        bulletAlien[j] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilAlien.img"), 0, 0);
+        bulletAlien[j]->desativarObj();
+        objs.push_back(bulletAlien[j]);
     }
 }
 
@@ -91,6 +101,13 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 
     while(this->flag.load())
     {
+        // Gera números aleatorios
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        std::uniform_int_distribution<> distrib(1, 20);
+        int random_number = distrib(gen);
+
         // Implementação responsável por mover os aliens
         for (int i = 0; i < 5; ++i)
         {
@@ -110,22 +127,20 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             }
         }
         // Implementação responsável por mover os projeteis
-        for (int j = 0; j < 15; ++j)
+        for (int j = 0; j < 5; ++j)
         {
-            if (j < 5)
+            if (bulletAlien[j]->getActive())
             {
-                if (projetilAlien[j]->getActive())
-                {
-                    if (projetilAlien[j]->getPosL() >= 75)
-                        projetilAlien[j]->desativarObj();
-                    projetilAlien[j]->moveDown(8);
-                }   
-            }
-            if (projetilHero[j]->getActive())
+                if (bulletAlien[j]->getPosL() >= 75)
+                    bulletAlien[j]->desativarObj();
+                bulletAlien[j]->moveDown(8);
+            }   
+            
+            if (bulletHero[j]->getActive())
             {
-                if (projetilHero[j]->getPosL() <= 0)
-                    projetilHero[j]->desativarObj();
-                projetilHero[j]->moveUp(6);
+                if (bulletHero[j]->getPosL() <= 0)
+                    bulletHero[j]->desativarObj();
+                bulletHero[j]->moveUp(6);
             }
         }
         
@@ -134,28 +149,28 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
         {
             for (int t = 0; t < 5; ++t)
             {
-            if (alien[k]->colideCom(*projetilHero[t]))
+            if (alien[k]->colideCom(*bulletHero[t]))
             {
                 alien[k]->sofrerAtaque();
                 if (!alien[k]->isAlive())
                     alien[k]->desativarObj();
-                projetilHero[t]->desativarObj();
+                bulletHero[t]->desativarObj();
             }
             }
-            if (hero->colideCom(*projetilAlien[k]))
+            if (hero->colideCom(*bulletAlien[k]))
             {
                 hero->sofrerAtaque();
-                projetilAlien[k]->desativarObj();
+                bulletAlien[k]->desativarObj();
                 if (!hero->isAlive())
                     return Fase::GAME_OVER;
             }
         }
 
         screen.clear();
-        update();
+        this->update();
         this->draw(screen);
         this->show(screen);
-        pausar(150);
+        pausar(2);
         system("cls");
         
     }
