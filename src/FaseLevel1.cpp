@@ -10,9 +10,8 @@ void FaseLevel1::shoot()
     {
         if ( ! projetilHero[i]->getActive() )
         {
-            projetilHero[i]->ativarObj();
             projetilHero[i]->moveTo( (hero->getPosL() - 7 ), (hero->getPosC() + 10));
-            
+            projetilHero[i]->ativarObj();
             break;
         }
     }
@@ -67,7 +66,7 @@ void FaseLevel1::init()
 
     for (int i = 0; i<15; ++i)
     {
-        projetilHero[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 7, hero->getPosL() + 13 );
+        projetilHero[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 6, hero->getPosL() + 13 );
         projetilHero[i]->desativarObj();
         objs.push_back(projetilHero[i]);
     }
@@ -99,12 +98,12 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             {
                 if (alien[i]->getDir() )
                 {
-                    alien[i]->moveRight(5);
+                    alien[i]->moveRight(8);
                     if (alien[i]->getPosC() >= 314)
                         alien[i]->disableDir();
                 }
                 else {
-                    alien[i]->moveLeft(5);
+                    alien[i]->moveLeft(8);
                     if (alien[i]->getPosC() <= 0)
                         alien[i]->activeDir();
                 }
@@ -116,29 +115,39 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             if (j < 5)
             {
                 if (projetilAlien[j]->getActive())
-                    projetilAlien[j]->moveDown(3);
+                {
+                    if (projetilAlien[j]->getPosL() >= 75)
+                        projetilAlien[j]->desativarObj();
+                    projetilAlien[j]->moveDown(8);
+                }   
             }
             if (projetilHero[j]->getActive())
-                projetilHero[j]->moveUp(3);
+            {
+                if (projetilHero[j]->getPosL() <= 0)
+                    projetilHero[j]->desativarObj();
+                projetilHero[j]->moveUp(6);
+            }
         }
         
         // Eventos de colisão
-        for (int k = 0; k < 15; ++k)
+        for (int k = 0; k < 5; ++k)
         {
-            if (alien[k]->colideComBordas(*projetilHero[k]))
+            for (int t = 0; t < 5; ++t)
+            {
+            if (alien[k]->colideCom(*projetilHero[t]))
             {
                 alien[k]->sofrerAtaque();
                 if (!alien[k]->isAlive())
                     alien[k]->desativarObj();
+                projetilHero[t]->desativarObj();
             }
-            if (k < 5)
+            }
+            if (hero->colideCom(*projetilAlien[k]))
             {
-                if (hero->colideComBordas(*projetilAlien[k]))
-                {
-                    hero->sofrerAtaque();
-                    if (!hero->isAlive())
-                        return Fase::GAME_OVER;
-                }
+                hero->sofrerAtaque();
+                projetilAlien[k]->desativarObj();
+                if (!hero->isAlive())
+                    return Fase::GAME_OVER;
             }
         }
 
