@@ -8,15 +8,6 @@
 
 #include "HandleBullet.hpp"
 
-/* void FaseLevel1::handleBullet()
-{
-    for (int i = 0; i < 5; ++i)
-    {
-        if (!bulletHero[i]->getActive())
-            hero->shoot(*bulletHero[i]);
-    }
-} */
-
 void FaseLevel1::capturarTecla()
 {
     while (this->flag.load()) {
@@ -36,7 +27,6 @@ void FaseLevel1::capturarTecla()
                 HandleBullet::check(*hero, *bulletHero[i]);
             }
         }
-            //this->handleBullet();
 
         if ( tecla == 27 )
         {
@@ -120,7 +110,6 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
                     if (alien[i]->getPosC() <= 0)
                         alien[i]->activeDir();
                 }
-                // faz o alien atirar o projetil
             }
         }
         // Implementação responsável por mover os projeteis
