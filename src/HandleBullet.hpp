@@ -14,7 +14,7 @@ public:
     {
         if (!bullet.getActive())
         {
-            
+            alien.shoot(bullet);
         }
     }
     static void check(Hero &hero, ObjetoDeJogo &bullet)
