@@ -13,6 +13,8 @@ public:
     void activeDir();
     void disableDir();
 
+    void shoot(ObjetoDeJogo &) override;
+
 private:
     bool dir;
 };
