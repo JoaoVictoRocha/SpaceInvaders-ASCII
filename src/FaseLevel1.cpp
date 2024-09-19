@@ -88,12 +88,26 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
     while(this->flag.load())
     {
         // Gera números aleatorios
-        std::random_device rd;
-        std::mt19937 gen(rd());
+        for (int m = 0; m <5; ++m)
+        {
+            std::random_device rd;
+            std::mt19937 gen(rd());
 
-        std::uniform_int_distribution<> distrib(1, 20);
-        int random_number = distrib(gen);
+            std::uniform_int_distribution<> distrib(1, 50);
+            int random_number = distrib(gen);
 
+            // Disparo de alien
+            if (random_number == 10)
+                HandleBullet::check(*alien[0], *bulletAlien[0]);
+            else if (random_number == 20)
+                HandleBullet::check(*alien[1], *bulletAlien[1]);
+            else if (random_number == 30)
+                HandleBullet::check(*alien[2], *bulletAlien[2]);
+            else if (random_number == 40)
+                HandleBullet::check(*alien[3], *bulletAlien[3]);
+            else if (random_number == 50)
+                HandleBullet::check(*alien[4], *bulletAlien[4]);
+        }
         // Implementação responsável por mover os aliens
         for (int i = 0; i < 5; ++i)
         {
@@ -119,7 +133,7 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             {
                 if (bulletAlien[j]->getPosL() >= 75)
                     bulletAlien[j]->desativarObj();
-                bulletAlien[j]->moveDown(8);
+                bulletAlien[j]->moveDown(4);
             }   
 
             if (bulletHero[j]->getActive())
