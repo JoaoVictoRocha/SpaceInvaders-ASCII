@@ -23,9 +23,6 @@ public:
     void capturarTecla();
     void moverAlien();
     void pausar(int);
-
-    void handleBullet();
-    //void shoot();
     
 private:
     Hero *hero;
