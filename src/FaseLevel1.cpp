@@ -6,26 +6,16 @@
 
 #include <random>
 
-/* void FaseLevel1::shoot()
-{
-    for (int i = 0; i < 10; ++i)
-    {
-        if ( ! projetilHero[i]->getActive() )
-        {
-            projetilHero[i]->moveTo( (hero->getPosL() - 7 ), (hero->getPosC() + 10));
-            projetilHero[i]->ativarObj();
-            break;
-        }
-    }
-} */
-void FaseLevel1::handleBullet()
+#include "HandleBullet.hpp"
+
+/* void FaseLevel1::handleBullet()
 {
     for (int i = 0; i < 5; ++i)
     {
         if (!bulletHero[i]->getActive())
             hero->shoot(*bulletHero[i]);
     }
-}
+} */
 
 void FaseLevel1::capturarTecla()
 {
@@ -40,7 +30,13 @@ void FaseLevel1::capturarTecla()
             hero->moveRight();
 
         if ( tecla == 32)
-            this->handleBullet();
+        {
+            for (int i = 0; i<5; ++i)
+            {
+                HandleBullet::check(*hero, *bulletHero[i]);
+            }
+        }
+            //this->handleBullet();
 
         if ( tecla == 27 )
         {
@@ -62,16 +58,16 @@ void FaseLevel1::init()
     alien[0] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 314), 1));
     objs.push_back(alien[0]);
 
-    alien[1] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo1.img"), 0, 275), 1));
+    alien[1] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 275), 1));
     objs.push_back(alien[1]);
 
-    alien[2] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo1.img"), 0, 236), 1));
+    alien[2] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 236), 1));
     objs.push_back(alien[2]);
 
-    alien[3] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo1.img"), 0, 197), 1));
+    alien[3] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 197), 1));
     objs.push_back(alien[3]);
 
-    alien[4] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo1.img"), 0, 158), 1));
+    alien[4] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 158), 1));
     objs.push_back(alien[4]);
 
     for (int i = 0; i < 5; ++i)
@@ -115,15 +111,16 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             {
                 if (alien[i]->getDir() )
                 {
-                    alien[i]->moveRight(8);
+                    alien[i]->moveRight(2);
                     if (alien[i]->getPosC() >= 314)
                         alien[i]->disableDir();
                 }
                 else {
-                    alien[i]->moveLeft(8);
+                    alien[i]->moveLeft(2);
                     if (alien[i]->getPosC() <= 0)
                         alien[i]->activeDir();
                 }
+                // faz o alien atirar o projetil
             }
         }
         // Implementação responsável por mover os projeteis
@@ -135,7 +132,7 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
                     bulletAlien[j]->desativarObj();
                 bulletAlien[j]->moveDown(8);
             }   
-            
+
             if (bulletHero[j]->getActive())
             {
                 if (bulletHero[j]->getPosL() <= 0)
@@ -151,10 +148,11 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             {
             if (alien[k]->colideCom(*bulletHero[t]))
             {
+                bulletHero[t]->desativarObj();
                 alien[k]->sofrerAtaque();
                 if (!alien[k]->isAlive())
                     alien[k]->desativarObj();
-                bulletHero[t]->desativarObj();
+                
             }
             }
             if (hero->colideCom(*bulletAlien[k]))
@@ -165,6 +163,8 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
                     return Fase::GAME_OVER;
             }
         }
+
+        
 
         screen.clear();
         this->update();
