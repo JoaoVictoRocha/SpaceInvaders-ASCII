@@ -15,10 +15,10 @@ void FaseLevel1::capturarTecla()
         char tecla = _getch();
 
         if (GetAsyncKeyState(VK_LEFT) & 0x8000 && hero->getPosC() > 0)
-            hero->moveLeft();
+            hero->moveLeft(2);
 
         if (GetAsyncKeyState(VK_RIGHT) & 0x8000 && hero->getPosC() <= 323)
-            hero->moveRight();
+            hero->moveRight(2);
 
         if ( tecla == 32)
         {
@@ -85,29 +85,58 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 
     std::thread tecladoFase1(capturarTecla, this);
 
+    short cont = 0;
+
     while(this->flag.load())
     {
-        // Gera números aleatorios
-        for (int m = 0; m <5; ++m)
+        if (cont == 5)
+            return Fase::LEVEL_2;
+        // Eventos de colisão
+        for (int k = 0; k < 5; ++k)
         {
-            std::random_device rd;
-            std::mt19937 gen(rd());
-
-            std::uniform_int_distribution<> distrib(1, 50);
-            int random_number = distrib(gen);
-
-            // Disparo de alien
-            if (random_number == 10)
-                HandleBullet::check(*alien[0], *bulletAlien[0]);
-            else if (random_number == 20)
-                HandleBullet::check(*alien[1], *bulletAlien[1]);
-            else if (random_number == 30)
-                HandleBullet::check(*alien[2], *bulletAlien[2]);
-            else if (random_number == 40)
-                HandleBullet::check(*alien[3], *bulletAlien[3]);
-            else if (random_number == 50)
-                HandleBullet::check(*alien[4], *bulletAlien[4]);
+            for (int t = 0; t < 5; ++t)
+            {
+                if (alien[k]->colideCom(*bulletHero[t]))
+                { 
+                    if (bulletHero[t]->getActive())
+                        alien[k]->sofrerAtaque();
+                    bulletHero[t]->desativarObj();
+                    if (!alien[k]->isAlive())
+                    {
+                        alien[k]->desativarObj();
+                        ++cont;
+                    }
+                }
+            }
+            if (hero->colideCom(*bulletAlien[k]))
+            {
+                hero->sofrerAtaque();
+                bulletAlien[k]->desativarObj();
+                if (!hero->isAlive())
+                    return Fase::GAME_OVER;
+            }
         }
+
+        // Gera números aleatorios
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        std::uniform_int_distribution<> distrib(1, 50);
+        int random_number = distrib(gen);
+
+        // Disparo de alien
+        if (random_number == 10)
+            HandleBullet::check(*alien[0], *bulletAlien[0]);
+        else if (random_number == 20)
+            HandleBullet::check(*alien[1], *bulletAlien[1]);
+        else if (random_number == 30)
+            HandleBullet::check(*alien[2], *bulletAlien[2]);
+        else if (random_number == 40)
+            HandleBullet::check(*alien[3], *bulletAlien[3]);
+        else if (random_number == 50)
+            HandleBullet::check(*alien[4], *bulletAlien[4]);
+
         // Implementação responsável por mover os aliens
         for (int i = 0; i < 5; ++i)
         {
@@ -144,36 +173,11 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             }
         }
         
-        // Eventos de colisão
-        for (int k = 0; k < 5; ++k)
-        {
-            for (int t = 0; t < 5; ++t)
-            {
-            if (alien[k]->colideCom(*bulletHero[t]))
-            {
-                bulletHero[t]->desativarObj();
-                alien[k]->sofrerAtaque();
-                if (!alien[k]->isAlive())
-                    alien[k]->desativarObj();
-                
-            }
-            }
-            if (hero->colideCom(*bulletAlien[k]))
-            {
-                hero->sofrerAtaque();
-                bulletAlien[k]->desativarObj();
-                if (!hero->isAlive())
-                    return Fase::GAME_OVER;
-            }
-        }
-
-        
-
         screen.clear();
         this->update();
         this->draw(screen);
         this->show(screen);
-        pausar(2);
+        pausar(45);
         system("cls");
         
     }
