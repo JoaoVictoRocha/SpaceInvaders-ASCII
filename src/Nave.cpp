@@ -11,9 +11,10 @@ bool Nave::isAlive()
     return false;
 }
 
-void Nave::sofrerAtaque()
+void Nave::sofrerAtaque(ObjetoDeJogo &bullet)
 {
     --qtdVidas;
+    bullet.desativarObj();
 }
 
 void Nave::shoot(ObjetoDeJogo &obj)
