@@ -10,19 +10,21 @@ public:
     HandleBullet(){}
     ~HandleBullet(){}
 
-    static void check(Alien &alien, ObjetoDeJogo &bullet)
+    static void checkAlien(Alien &alien, ObjetoDeJogo &bullet)
     {
-        if (!bullet.getActive())
+        if (alien.getActive() && !bullet.getActive())
         {
             alien.shoot(bullet);
         }
     }
-    static void check(Hero &hero, ObjetoDeJogo &bullet)
+    static bool checkHero(Hero &hero, ObjetoDeJogo &bullet)
     {
-        if (!bullet.getActive())
+        if (hero.getActive() && !bullet.getActive())
         {
             hero.shoot(bullet);
+            return true;
         }
+        return false;
     }
 
 };
