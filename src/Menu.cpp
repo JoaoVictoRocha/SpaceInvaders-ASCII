@@ -1,14 +1,12 @@
 #include "Menu.hpp"
 
-Menu::Menu(const std::string &n, const Sprite &bkg) : Fase(n, bkg), escolha(0)
+Menu::Menu(const std::string &n, const Sprite &bkg) : Fase(n, bkg)
 {
-
+    escolha = 0;
 }
 
 Menu::~Menu()
 {
-    delete [] seta;
-    delete [] exit;
 }
 
 void Menu::capturarTecla()
@@ -18,22 +16,24 @@ void Menu::capturarTecla()
         char tecla = _getch();
 
         pausar(45);
-        if ((GetAsyncKeyState(VK_UP) & 0x8000) && this->escolha == 0)
+        if ((GetAsyncKeyState(VK_UP) & 0x8000) && (escolha == 0) ) 
         {
-            this->escolha += 1;
+            escolha = 1;
         }
-        else if ((GetAsyncKeyState(VK_UP) & 0x8000) && this->escolha == 1)
+        else if ((GetAsyncKeyState(VK_UP) & 0x8000) && (escolha == 1))
         {
-            this->escolha -= 1;
+            escolha = 0;
         }
-        else if ((GetAsyncKeyState(VK_DOWN) & 0x8000) && this->escolha == 0)
+        else if ((GetAsyncKeyState(VK_DOWN) & 0x8000) && (escolha == 0))
         {
-            this->escolha += 1;
+            escolha = 1;
         }
-        else if ((GetAsyncKeyState(VK_DOWN) & 0x8000) && this->escolha == 1)
+        else if ((GetAsyncKeyState(VK_DOWN) & 0x8000) && (escolha == 1))
         {
-            this->escolha -= 1;
+            escolha = 0;
         }
+        else if (tecla == 'a')
+            escolha = 10;
         else if (tecla == 13)
         {
             this->flag.store(false);
@@ -54,13 +54,16 @@ void Menu::pausar(int millissegundos)
 
 void Menu::init()
 {
-    this->seta = new ObjetoDeJogo("Seta", Sprite("rsc/setaEscolha.img"), 150, 30);
+    this->menu = new ObjetoDeJogo("Menu", Sprite("rsc/menu.img"), 15, 155);
+    objs.push_back(menu);
+
+    this->seta = new ObjetoDeJogo("Seta", Sprite("rsc/setaEscolha.img"), 18, 160);
     objs.push_back(seta);
 
-    this->start = new ObjetoDeJogo("Start", Sprite("rsc/start.img"), 145, 37);
+    this->start = new ObjetoDeJogo("Start", Sprite("rsc/start.img"), 22, 120);
     objs.push_back(start);
 
-    this->exit = new ObjetoDeJogo("Exit", Sprite("rsc/exit.img"), 145, 42);
+    this->exit = new ObjetoDeJogo("Exit", Sprite("rsc/exit.img"), 29, 120);
     objs.push_back(exit);
 
 }
@@ -77,6 +80,7 @@ unsigned Menu::run(SpriteBuffer &screen)
 
     while (this->flag.load())
     {
+        screen.clear();
         this->update();
         this->draw(screen);
         this->show(screen);
@@ -84,6 +88,7 @@ unsigned Menu::run(SpriteBuffer &screen)
         pausar(150);
         system("cls");
     }
+    menu.join();
 
     return (escolha == 0) ? Fase::LEVEL_1 : Fase::END_GAME;
 }

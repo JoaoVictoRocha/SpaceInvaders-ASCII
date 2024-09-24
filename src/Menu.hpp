@@ -23,6 +23,7 @@ public:
     void pausar(int);
 
 private:
+    ObjetoDeJogo *menu;
     ObjetoDeJogo *seta;
     ObjetoDeJogo *start;
     ObjetoDeJogo *exit;
