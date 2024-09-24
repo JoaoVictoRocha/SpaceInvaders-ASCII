@@ -24,7 +24,8 @@ void FaseLevel1::capturarTecla()
         {
             for (int i = 0; i<5; ++i)
             {
-                HandleBullet::check(*hero, *bulletHero[i]);
+                if(HandleBullet::checkHero(*hero, *bulletHero[i]))
+                    break;
             }
         }
 
@@ -65,13 +66,10 @@ void FaseLevel1::init()
         bulletHero[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 6, hero->getPosL() + 13 );
         bulletHero[i]->desativarObj();
         objs.push_back(bulletHero[i]);
-    }
 
-    for (int j = 0; j < 5; ++j)
-    {
-        bulletAlien[j] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilAlien.img"), 0, 0);
-        bulletAlien[j]->desativarObj();
-        objs.push_back(bulletAlien[j]);
+        bulletAlien[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilAlien.img"), 0, 0);
+        bulletAlien[i]->desativarObj();
+        objs.push_back(bulletAlien[i]);
     }
 }
 
@@ -92,54 +90,29 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
         if (cont == 5)
             return Fase::LEVEL_2;
         // Eventos de colisão
-        for (int k = 0; k < 5; ++k)
+        for (int i = 0; i < 5; ++i)
         {
-            for (int t = 0; t < 5; ++t)
+            for (int t = 0; t < 5; t++)
             {
-                if (alien[k]->colideCom(*bulletHero[t]))
+                if (alien[i]->colideComBordas(*bulletHero[t]))
                 { 
                     if (bulletHero[t]->getActive())
-                        alien[k]->sofrerAtaque();
-                    bulletHero[t]->desativarObj();
-                    if (!alien[k]->isAlive())
+                        alien[i]->sofrerAtaque(*bulletHero[t]);
+                    if (!alien[i]->isAlive())
                     {
-                        alien[k]->desativarObj();
+                        alien[i]->desativarObj();
                         ++cont;
                     }
                 }
             }
-            if (hero->colideCom(*bulletAlien[k]))
+            if (hero->colideComBordas(*bulletAlien[i]))
             {
-                hero->sofrerAtaque();
-                bulletAlien[k]->desativarObj();
+                hero->sofrerAtaque(*bulletAlien[i]);
                 if (!hero->isAlive())
                     return Fase::GAME_OVER;
             }
-        }
 
-        // Gera números aleatorios
-
-        std::random_device rd;
-        std::mt19937 gen(rd());
-
-        std::uniform_int_distribution<> distrib(1, 50);
-        int random_number = distrib(gen);
-
-        // Disparo de alien
-        if (random_number == 10)
-            HandleBullet::check(*alien[0], *bulletAlien[0]);
-        else if (random_number == 20)
-            HandleBullet::check(*alien[1], *bulletAlien[1]);
-        else if (random_number == 30)
-            HandleBullet::check(*alien[2], *bulletAlien[2]);
-        else if (random_number == 40)
-            HandleBullet::check(*alien[3], *bulletAlien[3]);
-        else if (random_number == 50)
-            HandleBullet::check(*alien[4], *bulletAlien[4]);
-
-        // Implementação responsável por mover os aliens
-        for (int i = 0; i < 5; ++i)
-        {
+            // Implementação responsável por mover os aliens
             if (alien[i]->isAlive())
             {
                 if (alien[i]->getDir() )
@@ -154,24 +127,42 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
                         alien[i]->activeDir();
                 }
             }
-        }
-        // Implementação responsável por mover os projeteis
-        for (int j = 0; j < 5; ++j)
-        {
-            if (bulletAlien[j]->getActive())
+
+            // Implementação responsável por mover os projeteis
+            if (bulletAlien[i]->getActive())
             {
-                if (bulletAlien[j]->getPosL() >= 75)
-                    bulletAlien[j]->desativarObj();
-                bulletAlien[j]->moveDown(4);
+                if (bulletAlien[i]->getPosL() >= 75)
+                    bulletAlien[i]->desativarObj();
+                bulletAlien[i]->moveDown(3);
             }   
 
-            if (bulletHero[j]->getActive())
+            if (bulletHero[i]->getActive())
             {
-                if (bulletHero[j]->getPosL() <= 0)
-                    bulletHero[j]->desativarObj();
-                bulletHero[j]->moveUp(6);
+                if (bulletHero[i]->getPosL() <= 0)
+                    bulletHero[i]->desativarObj();
+                else {
+                    bulletHero[i]->moveUp(3);
+                }
             }
+
         }
+        // Gera números aleatorios
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distrib(1, 50);
+        int random_number = distrib(gen);
+
+        // Disparo de alien
+        if (random_number == 10)
+            HandleBullet::checkAlien(*alien[0], *bulletAlien[0]);
+        else if (random_number == 20)
+            HandleBullet::checkAlien(*alien[1], *bulletAlien[1]);
+        else if (random_number == 30)
+            HandleBullet::checkAlien(*alien[2], *bulletAlien[2]);
+        else if (random_number == 40)
+            HandleBullet::checkAlien(*alien[3], *bulletAlien[3]);
+        else if (random_number == 50)
+            HandleBullet::checkAlien(*alien[4], *bulletAlien[4]);
         
         screen.clear();
         this->update();
