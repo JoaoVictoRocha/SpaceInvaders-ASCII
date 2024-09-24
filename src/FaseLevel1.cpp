@@ -117,12 +117,12 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             {
                 if (alien[i]->getDir() )
                 {
-                    alien[i]->moveRight(2);
+                    alien[i]->moveRight(3);
                     if (alien[i]->getPosC() >= 314)
                         alien[i]->disableDir();
                 }
                 else {
-                    alien[i]->moveLeft(2);
+                    alien[i]->moveLeft(3);
                     if (alien[i]->getPosC() <= 0)
                         alien[i]->activeDir();
                 }
@@ -149,19 +149,19 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
         // Gera números aleatorios
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> distrib(1, 50);
+        std::uniform_int_distribution<> distrib(1, 30);
         int random_number = distrib(gen);
 
         // Disparo de alien
-        if (random_number == 10)
+        if (random_number == 6)
             HandleBullet::checkAlien(*alien[0], *bulletAlien[0]);
-        else if (random_number == 20)
+        else if (random_number == 12)
             HandleBullet::checkAlien(*alien[1], *bulletAlien[1]);
-        else if (random_number == 30)
+        else if (random_number == 18)
             HandleBullet::checkAlien(*alien[2], *bulletAlien[2]);
-        else if (random_number == 40)
+        else if (random_number == 24)
             HandleBullet::checkAlien(*alien[3], *bulletAlien[3]);
-        else if (random_number == 50)
+        else if (random_number == 30)
             HandleBullet::checkAlien(*alien[4], *bulletAlien[4]);
         
         screen.clear();
