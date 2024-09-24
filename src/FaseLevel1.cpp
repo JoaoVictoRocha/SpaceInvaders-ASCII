@@ -17,10 +17,10 @@ void FaseLevel1::capturarTecla()
         if (GetAsyncKeyState(VK_LEFT) & 0x8000 && hero->getPosC() > 0)
             hero->moveLeft(2);
 
-        if (GetAsyncKeyState(VK_RIGHT) & 0x8000 && hero->getPosC() <= 323)
+        else if (GetAsyncKeyState(VK_RIGHT) & 0x8000 && hero->getPosC() <= 323)
             hero->moveRight(2);
 
-        if ( tecla == 32)
+        if (tecla == 32)
         {
             for (int i = 0; i<5; ++i)
             {
@@ -29,7 +29,7 @@ void FaseLevel1::capturarTecla()
             }
         }
 
-        if ( tecla == 27 )
+        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
         {
             this->flag.store(false);
             break;
@@ -88,7 +88,7 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
     while(this->flag.load())
     {
         if (cont == 5)
-            return Fase::LEVEL_2;
+            return Fase::LEVEL_COMPLETE;
         // Eventos de colisão
         for (int i = 0; i < 5; ++i)
         {
@@ -173,7 +173,7 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
         
     }
 
-    return Fase::END_GAME;
+    return Fase::GAME_OVER;
 
 }
 
