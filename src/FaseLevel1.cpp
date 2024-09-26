@@ -2,27 +2,51 @@
 #include "ASCII_Engine/SpriteBuffer.hpp"
 #include "ASCII_Engine/Sprite.hpp"
 #include <iostream>
-#include <conio.h>
 
 #include <random>
 
 #include "HandleBullet.hpp"
 
+FaseLevel1::FaseLevel1(std::string n, const Sprite &bkg) : Fase(n,bkg) 
+{
+
+}
+
+FaseLevel1::~FaseLevel1()
+{
+    delete hero;
+
+    for(int i = 0; i<5; ++i)
+    {
+        delete alien[i];
+        delete bulletAlien[i];
+    }
+    for (int j = 0; j<3; ++j)
+    {
+        delete bulletHero[j];
+    }
+}
+
 void FaseLevel1::capturarTecla()
 {
     while (this->flag.load()) {
 
-        char tecla = _getch();
-
-        if (GetAsyncKeyState(VK_LEFT) & 0x8000 && hero->getPosC() > 0)
-            hero->moveLeft(2);
-
-        else if (GetAsyncKeyState(VK_RIGHT) & 0x8000 && hero->getPosC() <= 323)
-            hero->moveRight(2);
-
-        if (tecla == 32)
+        if ( (GetAsyncKeyState(VK_LEFT) & 0x8000) && ( hero->getPosC() > 0) )
         {
-            for (int i = 0; i<5; ++i)
+            pausar(50);
+            hero->moveLeft(4);
+        }
+
+        else if ( (GetAsyncKeyState(VK_RIGHT) & 0x8000) && (hero->getPosC() <= 323) )
+        {
+            pausar(50);
+            hero->moveRight(4);
+        }
+
+        else if (GetAsyncKeyState(VK_SPACE) & 0X8000)
+        {
+            pausar(200);
+            for (int i = 0; i<3; ++i)
             {
                 if(HandleBullet::checkHero(*hero, *bulletHero[i]))
                     break;
@@ -34,10 +58,12 @@ void FaseLevel1::capturarTecla()
             this->flag.store(false);
             break;
         }
+        
     }
 }
 
-void FaseLevel1::pausar(int milissegundos) {
+void FaseLevel1::pausar(int milissegundos) 
+{
     std::this_thread::sleep_for(std::chrono::milliseconds(milissegundos));
 }
 
@@ -63,9 +89,12 @@ void FaseLevel1::init()
 
     for (int i = 0; i < 5; ++i)
     {
-        bulletHero[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 6, hero->getPosL() + 13 );
-        bulletHero[i]->desativarObj();
-        objs.push_back(bulletHero[i]);
+        if (i<3)
+        {
+            bulletHero[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilHero.img"), hero->getPosC() - 6, hero->getPosL() + 13 );
+            bulletHero[i]->desativarObj();
+            objs.push_back(bulletHero[i]);
+        }
 
         bulletAlien[i] = new ObjetoDeJogo("Projetil", Sprite("rsc/projetilAlien.img"), 0, 0);
         bulletAlien[i]->desativarObj();
@@ -88,11 +117,15 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
     while(this->flag.load())
     {
         if (cont == 5)
+        {
+            this->flag.store(false);
+            tecladoFase1.join();
             return Fase::LEVEL_COMPLETE;
+        }
         // Eventos de colisão
         for (int i = 0; i < 5; ++i)
         {
-            for (int t = 0; t < 5; t++)
+            for (int t = 0; t < 3; t++)
             {
                 if (alien[i]->colideComBordas(*bulletHero[t]))
                 { 
@@ -135,13 +168,15 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
                     bulletAlien[i]->desativarObj();
                 bulletAlien[i]->moveDown(3);
             }   
-
-            if (bulletHero[i]->getActive())
+            if (i<3)
             {
-                if (bulletHero[i]->getPosL() <= 0)
-                    bulletHero[i]->desativarObj();
-                else {
-                    bulletHero[i]->moveUp(3);
+                if (bulletHero[i]->getActive())
+                {
+                    if (bulletHero[i]->getPosL() <= 0)
+                        bulletHero[i]->desativarObj();
+                    else {
+                        bulletHero[i]->moveUp(3);
+                    }
                 }
             }
 
@@ -153,27 +188,39 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
         int random_number = distrib(gen);
 
         // Disparo de alien
-        if (random_number == 6)
-            HandleBullet::checkAlien(*alien[0], *bulletAlien[0]);
-        else if (random_number == 12)
-            HandleBullet::checkAlien(*alien[1], *bulletAlien[1]);
-        else if (random_number == 18)
-            HandleBullet::checkAlien(*alien[2], *bulletAlien[2]);
-        else if (random_number == 24)
-            HandleBullet::checkAlien(*alien[3], *bulletAlien[3]);
-        else if (random_number == 30)
-            HandleBullet::checkAlien(*alien[4], *bulletAlien[4]);
+
+        switch(random_number)
+        {
+            case 6:
+                HandleBullet::checkAlien(*alien[0], *bulletAlien[0]);
+                break;
+            case 12:
+                HandleBullet::checkAlien(*alien[1], *bulletAlien[1]);
+                break;
+            case 18:
+                HandleBullet::checkAlien(*alien[2], *bulletAlien[2]);
+                break;
+            case 24:
+                HandleBullet::checkAlien(*alien[3], *bulletAlien[3]);
+                break;
+            case 30:
+                HandleBullet::checkAlien(*alien[4], *bulletAlien[4]);
+                break;
+            default:
+                break;
+        }
         
         screen.clear();
         this->update();
         this->draw(screen);
         this->show(screen);
-        pausar(45);
+        pausar(60);
         system("cls");
         
     }
 
-    return Fase::GAME_OVER;
+    tecladoFase1.join();
+    return Fase::END_GAME;
 
 }
 
