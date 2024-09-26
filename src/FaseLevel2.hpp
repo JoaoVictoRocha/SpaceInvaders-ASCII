@@ -7,7 +7,7 @@
 #include "Hero.hpp"
 #include "Alien.hpp"
 #include "HandleBullet.hpp"
-#include <conio.h>
+#include <iostream>
 #include <string>
 #include <thread>
 #include <atomic>
@@ -17,7 +17,7 @@
 class FaseLevel2 : public Fase
 {
 public:
-    FaseLevel2(const std::string &, const Sprite &);
+    FaseLevel2(const std::string &n, const Sprite &bkg);
     ~FaseLevel2();
 
     virtual void init();
@@ -28,10 +28,12 @@ public:
 private:
     Hero *hero;
     Alien *alien[10];
-    ObjetoDeJogo *bulletHero[4];
+    ObjetoDeJogo *bulletHero[3];
     ObjetoDeJogo *bulletAlien[10];
 
     std::atomic<bool> flag;
+
+    std::list<ObjetoDeJogo*> colisoes;
 };
 
 #endif
