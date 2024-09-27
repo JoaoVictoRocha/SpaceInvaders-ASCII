@@ -7,7 +7,6 @@ class Alien : public Nave
 {
 public:
     Alien(const Nave &);
-    ~Alien(){}
 
     bool getDir() const {return dir;}
     void activeDir();
