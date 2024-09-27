@@ -30,10 +30,11 @@ private:
     Alien *alien[10];
     ObjetoDeJogo *bulletHero[3];
     ObjetoDeJogo *bulletAlien[10];
-
+    ObjetoDeJogo *vidasTxt;
+    ObjetoDeJogo *vidas[3];
+    ObjetoDeJogo *nivel;
+    ObjetoDeJogo *gameOver;
     std::atomic<bool> flag;
-
-    std::list<ObjetoDeJogo*> colisoes;
 };
 
 #endif

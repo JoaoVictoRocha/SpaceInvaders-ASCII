@@ -28,6 +28,10 @@ private:
     Alien *alien[5];
     ObjetoDeJogo *bulletHero[3];
     ObjetoDeJogo *bulletAlien[5];
+    ObjetoDeJogo *vidasTxt;
+    ObjetoDeJogo *vidas[3];
+    ObjetoDeJogo *nivel;
+    ObjetoDeJogo *gameOver;
     std::atomic<bool> flag;
 };
 
