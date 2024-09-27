@@ -7,7 +7,6 @@ class Hero : public Nave
 {
 public:
     Hero(const Nave &);
-    ~Hero(){}
 
     void shoot(ObjetoDeJogo &) override;
 };
