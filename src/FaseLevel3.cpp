@@ -219,20 +219,8 @@ unsigned FaseLevel3::run(SpriteBuffer &screen)
             }
 
             // Implementação responsável por mover alien
-            if (alien[i]->isAlive())
-            {
-                if (alien[i]->getDir() )
-                {
-                    alien[i]->moveRight(3);
-                    if (alien[i]->getPosC() >= 314)
-                        alien[i]->disableDir();
-                }
-                else {
-                    alien[i]->moveLeft(3);
-                    if (alien[i]->getPosC() <= 0)
-                        alien[i]->activeDir();
-                }
-            }
+            alien[i]->update();
+            
             // Implementação responsável por mover os projeteis
             if (bulletAlien[i]->getActive())
             {
