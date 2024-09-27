@@ -18,15 +18,15 @@ void Alien::shoot(ObjetoDeJogo &bullet)
 {
     if (this->getName() == "Alien1")
     {
-        bullet.moveTo( this->getPosL() + 8 , this->getPosC() + 14);
+        bullet.moveTo( this->getPosL() + 12 , this->getPosC() + 10);
         bullet.ativarObj();
     }
     else if (this->getName() == "Alien2")
     {
-        bullet.moveTo(this->getPosL(), this->getPosC());
+        bullet.moveTo(this->getPosL() + 10, this->getPosC() + 13);
         bullet.ativarObj();
     } else {
-        bullet.moveTo(this->getPosL(), this->getPosC());
+        bullet.moveTo(this->getPosL() + 14, this->getPosC() + 13);
         bullet.ativarObj();
     }
     bullet.ativarObj();
