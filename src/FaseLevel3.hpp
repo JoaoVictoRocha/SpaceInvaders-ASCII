@@ -13,11 +13,12 @@
 #include <atomic>
 #include <chrono>
 #include <windows.h>
+#include <random>
 
 class FaseLevel3 : public Fase
 {
 public:
-    FaseLevel3();
+    FaseLevel3(const std::string &n, const Sprite &bkg);
     ~FaseLevel3();
 
     virtual void init();
@@ -28,9 +29,13 @@ public:
 private:
     Hero *hero;
     Alien *alien[15];
-    ObjetoDeJogo *bulletHero[5];
+    ObjetoDeJogo *bulletHero[3];
     ObjetoDeJogo *bulletAlien[15];
-
+    ObjetoDeJogo *vidasTxt;
+    ObjetoDeJogo *vidas[3];
+    ObjetoDeJogo *nivel;
+    ObjetoDeJogo *gameOver;
+    ObjetoDeJogo *congrats;
     std::atomic<bool> flag;
 };
 
