@@ -15,6 +15,9 @@ FaseLevel1::FaseLevel1(std::string n, const Sprite &bkg) : Fase(n,bkg)
 FaseLevel1::~FaseLevel1()
 {
     delete hero;
+    delete vidasTxt;
+    delete nivel;
+    delete gameOver;
 
     for(int i = 0; i<5; ++i)
     {
@@ -24,6 +27,7 @@ FaseLevel1::~FaseLevel1()
     for (int j = 0; j<3; ++j)
     {
         delete bulletHero[j];
+        delete vidas[j];
     }
 }
 
@@ -69,7 +73,7 @@ void FaseLevel1::pausar(int milissegundos)
 
 void FaseLevel1::init()
 {
-    hero = new Hero(Nave(ObjetoDeJogo("Heroi", Sprite("rsc/hero.img"), 68, 177), 3));
+    hero = new Hero(Nave(ObjetoDeJogo("Heroi", Sprite("rsc/hero.img"), 98, 177), 3));
     objs.push_back(hero);
 
     alien[0] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 314), 1));
@@ -86,6 +90,25 @@ void FaseLevel1::init()
 
     alien[4] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 158), 1));
     objs.push_back(alien[4]);
+
+    vidasTxt = new ObjetoDeJogo("Vidas", Sprite("rsc/vidaExtraTxt.img"), 5, 360);
+    objs.push_back(vidasTxt);
+
+    vidas[0] = new ObjetoDeJogo("Vidas", Sprite("rsc/hero.img"), 12, 360);
+    objs.push_back(vidas[0]);
+
+    vidas[1] = new ObjetoDeJogo("Vidas", Sprite("rsc/hero.img"), 12, 390);
+    objs.push_back(vidas[1]);
+
+    vidas[2] = new ObjetoDeJogo("Vidas", Sprite("rsc/hero.img"), 27, 360);
+    objs.push_back(vidas[2]);
+
+    nivel = new ObjetoDeJogo("Nivel", Sprite("rsc/nivel1.img"), 70, 380);
+    objs.push_back(nivel);
+
+    gameOver = new ObjetoDeJogo("GameOver", Sprite("rsc/gameOver.img"), 45, 150);
+    gameOver->desativarObj();
+    objs.push_back(gameOver);
 
     for (int i = 0; i < 5; ++i)
     {
@@ -129,8 +152,7 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             {
                 if (alien[i]->colideComBordas(*bulletHero[t]))
                 { 
-                    if (bulletHero[t]->getActive())
-                        alien[i]->sofrerAtaque(*bulletHero[t]);
+                    alien[i]->sofrerAtaque(*bulletHero[t]);
                     if (!alien[i]->isAlive())
                     {
                         alien[i]->desativarObj();
@@ -141,8 +163,24 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             if (hero->colideComBordas(*bulletAlien[i]))
             {
                 hero->sofrerAtaque(*bulletAlien[i]);
+                for (int j = 2; j >= 0; j--)
+                {
+                    if (vidas[j]->getActive())
+                    {
+                        vidas[j]->desativarObj();
+                        break;
+                    }
+                }
                 if (!hero->isAlive())
+                {
+                    gameOver->ativarObj();
+                    screen.clear();
+                    this->draw(screen);
+                    this->show(screen);
+                    this->flag.store(false);
+                    tecladoFase1.join();
                     return Fase::GAME_OVER;
+                }
             }
 
             // Implementação responsável por mover os aliens
@@ -164,7 +202,7 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
             // Implementação responsável por mover os projeteis
             if (bulletAlien[i]->getActive())
             {
-                if (bulletAlien[i]->getPosL() >= 75)
+                if (bulletAlien[i]->getPosL() >= 105)
                     bulletAlien[i]->desativarObj();
                 bulletAlien[i]->moveDown(3);
             }   
@@ -192,19 +230,39 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
         switch(random_number)
         {
             case 6:
-                HandleBullet::checkAlien(*alien[0], *bulletAlien[0]);
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (HandleBullet::checkAlien(*alien[0], *bulletAlien[i]))
+                        break;
+                }
                 break;
             case 12:
-                HandleBullet::checkAlien(*alien[1], *bulletAlien[1]);
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (HandleBullet::checkAlien(*alien[1], *bulletAlien[i]))
+                        break;
+                }
                 break;
             case 18:
-                HandleBullet::checkAlien(*alien[2], *bulletAlien[2]);
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (HandleBullet::checkAlien(*alien[2], *bulletAlien[i]))
+                        break;
+                }
                 break;
             case 24:
-                HandleBullet::checkAlien(*alien[3], *bulletAlien[3]);
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (HandleBullet::checkAlien(*alien[3], *bulletAlien[i]))
+                        break;
+                }
                 break;
             case 30:
-                HandleBullet::checkAlien(*alien[4], *bulletAlien[4]);
+                for (int i = 0; i < 5; ++i)
+                {
+                    if (HandleBullet::checkAlien(*alien[4], *bulletAlien[i]))
+                        break;
+                }
                 break;
             default:
                 break;
