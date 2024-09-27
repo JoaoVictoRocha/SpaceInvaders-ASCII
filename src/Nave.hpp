@@ -7,7 +7,6 @@ class Nave : public ObjetoDeJogo
 {
 public:
     Nave(const ObjetoDeJogo &obj, int vidas);
-    ~Nave(){}
     bool isAlive();
     void sofrerAtaque(ObjetoDeJogo &bullet);
     virtual void shoot(ObjetoDeJogo &);
