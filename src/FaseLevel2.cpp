@@ -1,4 +1,5 @@
 #include "FaseLevel2.hpp"
+#include "RandomShoot.hpp"
 #include <random>
 
 FaseLevel2::FaseLevel2(const std::string &n, const Sprite &bkg) : Fase(n, bkg)
@@ -142,6 +143,8 @@ unsigned FaseLevel2::run(SpriteBuffer &screen)
 
     std::thread tecladoFase2(capturarTecla, this);
 
+    RandomShoot controlShoot(alien, bulletAlien, 30, 3, 10);
+
     short cont = 0;
 
     while(this->flag.load())
@@ -217,89 +220,8 @@ unsigned FaseLevel2::run(SpriteBuffer &screen)
             }
         }
 
-        // Gera números aleatorios
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> distrib(1, 60);
-        int random_number = distrib(gen);
-
-        // Disparo de alien
-
-        switch(random_number)
-        {
-            case 6:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[0], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 12:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[1], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 18:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[2], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 24:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[3], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 30:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[4], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 36:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[5], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 42:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[6], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 48:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[7], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 54:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[8], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            case 60:
-                for (int i = 0; i < 10; ++i)
-                {
-                    if (HandleBullet::checkAlien(*alien[9], *bulletAlien[i]))
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
+        // Gera números aleatorios e faz o alien disparar
+        controlShoot.randomShoot();
         
         screen.clear();
         this->update();
