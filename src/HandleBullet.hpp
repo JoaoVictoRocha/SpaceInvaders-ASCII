@@ -8,14 +8,15 @@ class HandleBullet
 {
 public:
     HandleBullet(){}
-    ~HandleBullet(){}
 
-    static void checkAlien(Alien &alien, ObjetoDeJogo &bullet)
+    static bool checkAlien(Alien &alien, ObjetoDeJogo &bullet)
     {
         if (alien.getActive() && !bullet.getActive())
         {
             alien.shoot(bullet);
+            return true;
         }
+        return false;
     }
     static bool checkHero(Hero &hero, ObjetoDeJogo &bullet)
     {
