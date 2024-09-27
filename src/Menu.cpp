@@ -7,6 +7,10 @@ Menu::Menu(const std::string &n, const Sprite &bkg) : Fase(n, bkg)
 
 Menu::~Menu()
 {
+    delete menu;
+    delete seta;
+    delete start;
+    delete exit;
 }
 
 void Menu::capturarTecla()
@@ -20,10 +24,10 @@ void Menu::capturarTecla()
             if (escolha == 0)
             {
                 escolha = 1;
-                seta->moveTo(33, 180);
+                seta->moveTo(55, 180);
             } else {
                 escolha = 0;
-                seta->moveTo(26, 180);
+                seta->moveTo(47, 180);
             }
         }
         else if (GetAsyncKeyState(VK_DOWN) & 0x8000)
@@ -31,14 +35,15 @@ void Menu::capturarTecla()
             if (escolha == 0)
             {
                 escolha = 1;
-                seta->moveTo(33, 180);
+                seta->moveTo(55, 180);
             } else {
                 escolha = 0;
-                seta->moveTo(26, 180);
+                seta->moveTo(47, 180);
             }
         }
         else if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
             this->flag.store(false); // Sinaliza para a main que o programa deve encerrar
+            escolha = 1;
             break;
         }
 
@@ -58,16 +63,16 @@ void Menu::pausar(int millissegundos)
 
 void Menu::init()
 {
-    this->menu = new ObjetoDeJogo("Menu", Sprite("rsc/menu.img"), 20, 170);
+    this->menu = new ObjetoDeJogo("Menu", Sprite("rsc/menu.img"), 40, 170);
     objs.push_back(menu);
 
-    this->seta = new ObjetoDeJogo("Seta", Sprite("rsc/setaEscolha.img"), 26, 180);
+    this->seta = new ObjetoDeJogo("Seta", Sprite("rsc/setaEscolha.img"), 47, 180);
     objs.push_back(seta);
 
-    this->start = new ObjetoDeJogo("Start", Sprite("rsc/start.img"), 27, 140);
+    this->start = new ObjetoDeJogo("Start", Sprite("rsc/start.img"), 48, 140);
     objs.push_back(start);
 
-    this->exit = new ObjetoDeJogo("Exit", Sprite("rsc/exit.img"), 34, 140);
+    this->exit = new ObjetoDeJogo("Exit", Sprite("rsc/exit.img"), 56, 140);
     objs.push_back(exit);
 
 }
