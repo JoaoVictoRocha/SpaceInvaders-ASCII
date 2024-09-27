@@ -5,7 +5,6 @@
 #include "ASCII_Engine/Sprite.hpp"
 #include "Alien.hpp"
 #include "HandleBullet.hpp"
-#include <vector>
 #include <random>
 
 class RandomShoot
