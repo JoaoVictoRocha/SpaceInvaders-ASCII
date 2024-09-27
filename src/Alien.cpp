@@ -31,3 +31,25 @@ void Alien::shoot(ObjetoDeJogo &bullet)
     }
     bullet.ativarObj();
 }
+
+void Alien::update()
+{
+    // Movimentação do alien
+    if (isAlive())
+    {
+        if (dir)
+        {
+            moveRight(3);
+            if (getPosC() >= 314)  // Limite direito
+                disableDir();
+        }
+        else
+        {
+            moveLeft(3);
+            if (getPosC() <= 0)  // Limite esquerdo
+                activeDir();
+        }
+    }
+    // Chamar o update da classe base para manter a funcionalidade original
+    Nave::update();
+}

@@ -11,8 +11,8 @@ public:
     bool getDir() const {return dir;}
     void activeDir();
     void disableDir();
-
     void shoot(ObjetoDeJogo &) override;
+    void update() override;
 
 private:
     bool dir;
