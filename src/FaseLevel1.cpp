@@ -39,13 +39,13 @@ void FaseLevel1::capturarTecla()
         if ( (GetAsyncKeyState(VK_LEFT) & 0x8000) && ( hero->getPosC() > 0) )
         {
             pausar(50);
-            hero->moveLeft(4);
+            hero->moveLeft(hero->getVelMovimento());
         }
 
         else if ( (GetAsyncKeyState(VK_RIGHT) & 0x8000) && (hero->getPosC() <= 323) )
         {
             pausar(50);
-            hero->moveRight(4);
+            hero->moveRight(hero->getVelMovimento());
         }
 
         else if (GetAsyncKeyState(VK_SPACE) & 0X8000)
@@ -74,22 +74,22 @@ void FaseLevel1::pausar(int milissegundos)
 
 void FaseLevel1::init()
 {
-    hero = new Hero(Nave(ObjetoDeJogo("Heroi", Sprite("rsc/hero.img"), 98, 177), 3));
+    hero = new Hero(Nave(ObjetoDeJogo("Heroi", Sprite("rsc/hero.img"), 98, 177), 3, 4));
     objs.push_back(hero);
 
-    alien[0] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 314), 1));
+    alien[0] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 314), 1, 3));
     objs.push_back(alien[0]);
 
-    alien[1] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 275), 1));
+    alien[1] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 275), 1, 3));
     objs.push_back(alien[1]);
 
-    alien[2] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 236), 1));
+    alien[2] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 236), 1, 3));
     objs.push_back(alien[2]);
 
-    alien[3] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 197), 1));
+    alien[3] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 197), 1, 3));
     objs.push_back(alien[3]);
 
-    alien[4] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 158), 1));
+    alien[4] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 158), 1, 3));
     objs.push_back(alien[4]);
 
     vidasTxt = new ObjetoDeJogo("Vidas", Sprite("rsc/vidaExtraTxt.img"), 5, 360);

@@ -32,13 +32,13 @@ void FaseLevel2::capturarTecla()
         if (GetAsyncKeyState(VK_LEFT) & 0x8000 && hero->getPosC() > 0)
         {
             pausar(50);
-            hero->moveLeft(4);
+            hero->moveLeft(hero->getVelMovimento());
         }
 
         else if (GetAsyncKeyState(VK_RIGHT) & 0x8000 && hero->getPosC() <= 323)
         {
             pausar(50);
-            hero->moveRight(4);
+            hero->moveRight(hero->getVelMovimento());
         }
 
         if (GetAsyncKeyState(VK_SPACE) & 0X8000)
@@ -66,37 +66,37 @@ void FaseLevel2::pausar(int milissegundos)
 
 void FaseLevel2::init()
 {
-    hero = new Hero(Nave(ObjetoDeJogo("Heroi", Sprite("rsc/hero.img"), 98, 177), 3));
+    hero = new Hero(Nave(ObjetoDeJogo("Heroi", Sprite("rsc/hero.img"), 98, 177), 3, 4));
     objs.push_back(hero);
 
-    alien[0] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 314), 1));
+    alien[0] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 314), 1, 3));
     objs.push_back(alien[0]);
 
-    alien[1] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 275), 1));
+    alien[1] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 275), 1, 3));
     objs.push_back(alien[1]);
 
-    alien[2] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 236), 1));
+    alien[2] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 236), 1, 3));
     objs.push_back(alien[2]);
 
-    alien[3] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 197), 1));
+    alien[3] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 197), 1, 3));
     objs.push_back(alien[3]);
 
-    alien[4] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 158), 1));
+    alien[4] = new Alien(Nave(ObjetoDeJogo("Alien1", Sprite("rsc/inimigo1.img"), 0, 158), 1, 3));
     objs.push_back(alien[4]);
 
-    alien[5] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 314), 2));
+    alien[5] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 314), 2, 3));
     objs.push_back(alien[5]);
 
-    alien[6] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 275), 2));
+    alien[6] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 275), 2, 3));
     objs.push_back(alien[6]);
 
-    alien[7] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 235), 2));
+    alien[7] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 235), 2, 3));
     objs.push_back(alien[7]);
 
-    alien[8] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 197), 2));
+    alien[8] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 197), 2, 3));
     objs.push_back(alien[8]);
 
-    alien[9] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 158), 2));
+    alien[9] = new Alien(Nave(ObjetoDeJogo("Alien2", Sprite("rsc/inimigo2.img"), 14, 158), 2, 3));
     objs.push_back(alien[9]);
 
     vidasTxt = new ObjetoDeJogo("Vidas", Sprite("rsc/vidaExtraTxt.img"), 5, 360);
@@ -145,6 +145,7 @@ unsigned FaseLevel2::run(SpriteBuffer &screen)
 
     RandomShoot controlShoot(alien, bulletAlien, 30, 3, 10);
 
+    short aumentoVelocidade = 0;
     short cont = 0;
 
     while(this->flag.load())
@@ -196,7 +197,19 @@ unsigned FaseLevel2::run(SpriteBuffer &screen)
                     return Fase::GAME_OVER;
                 }
             }
-
+            // Condição para aumentar velocidade de movimento do alien
+            if (cont >= 5 && aumentoVelocidade == 0)
+            {
+                for (int j = 0; j < 10; ++j)
+                {
+                    if (alien[j]->isAlive())
+                    {
+                        alien[j]->setVelMovimento(alien[j]->getVelMovimento() + 2);
+                    }
+                    if (j == 9)
+                        aumentoVelocidade = 1;
+                }
+            }
             // Implementação responsável por mover alien
             alien[i]->update();
             
