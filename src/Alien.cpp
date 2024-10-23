@@ -39,13 +39,13 @@ void Alien::update()
     {
         if (dir)
         {
-            moveRight(3);
+            moveRight(this->getVelMovimento());
             if (getPosC() >= 314)  // Limite direito
                 disableDir();
         }
         else
         {
-            moveLeft(3);
+            moveLeft(this->getVelMovimento());
             if (getPosC() <= 0)  // Limite esquerdo
                 activeDir();
         }
