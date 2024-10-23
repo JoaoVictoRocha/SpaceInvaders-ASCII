@@ -1,6 +1,6 @@
 #include "Nave.hpp"
 
-Nave::Nave(const ObjetoDeJogo &obj, int vidas) : ObjetoDeJogo(obj), qtdVidas(vidas)
+Nave::Nave(const ObjetoDeJogo &obj, int vidas, int velocidade) : ObjetoDeJogo(obj), qtdVidas(vidas), velMovimento(velocidade)
 {
 }
 
@@ -19,4 +19,10 @@ void Nave::sofrerAtaque(ObjetoDeJogo &bullet)
 
 void Nave::shoot(ObjetoDeJogo &obj)
 {
+}
+
+void Nave::setVelMovimento(int velocidade)
+{
+    if (velocidade > 0)
+        velMovimento = velocidade;
 }
